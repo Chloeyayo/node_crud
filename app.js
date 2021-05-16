@@ -27,14 +27,14 @@ app.get('/students/get', (req, res) => {
   })
 })
 
-app.post('/students/create', (req, res) => {
+app.post('/students/new', (req, res) => {
   var list = []
   let newStudent = req.body
 
 fs.readFile(path.join(__dirname, 'db.json'), 'utf8', (err, data) => {
     if (err){return res.send( console.log(err))}
     list=JSON.parse(data)
-    newStudent.id=list.students.length
+    newStudent.id=list.students.length+1
     list.students.push(newStudent)
     console.log(list);
     fs.writeFile(path.join(__dirname,'db.json'),JSON.stringify(list),(_err)=>{

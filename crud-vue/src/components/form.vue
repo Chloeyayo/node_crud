@@ -80,6 +80,7 @@ export default {
         hobbies: [{ required: true, trigger: "blur", message: "请输入爱好" }],
       },
       addDialogVisible: false,
+      formType: "",
     };
   },
   methods: {
@@ -90,24 +91,40 @@ export default {
       this.form = data.data.students;
       console.log(this.form);
     },
-    handleEdit(scope) {},
-    handleDelete(scope) {},
+    handleEdit(row) {
+      this.formType = "edit";
+      this.addDialogVisible = true;
+      this.addForm = row;
+    },
+    handleDelete(row) {},
     handleAddBtn() {
+      this.formType = "add";
       this.addDialogVisible = true;
     },
     handleAddFormClose() {
-      this.addDialogVisible=false;
+      this.addDialogVisible = false;
       this.$refs.addFormRef.resetFields();
     },
 
     handleSubmit() {
       this.$refs.addFormRef.validate(async (valid) => {
         if (!valid) return false;
-        const data =await api.addStudentsApi(this.addForm).catch((err) => {
-          return err;})
-        console.log(data);
-        this.$message.success("添加成功");
-        this.getForm()
+        if (this.formType == "add") {
+          const data = await api.addStudentsApi(this.addForm).catch((err) => {
+            return err;
+          });
+          console.log(data);
+          this.$message.success("添加成功");
+        } else if (this.formType == "edit") {
+          // const data = await api.editStudentsApi(this.addForm).catch((err) => {
+          //   return err;
+          // });
+          // console.log(data);
+          console.log("edit");
+          this.$message.success("修改成功");
+
+        }
+        this.getForm();
         this.handleAddFormClose();
       });
     },

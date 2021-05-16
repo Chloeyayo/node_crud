@@ -4,7 +4,10 @@ export default {
     return request.get('/students/get')
   },
   addStudentsApi(data){
-    return request.post('/students/create',data)
+    return request.post('/students/new',data)
+  },
+  editStudentApi(data){
+
   }
 }
 
