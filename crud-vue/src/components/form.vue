@@ -2,10 +2,7 @@
   <div id="form">
     <el-row :gutter="20">
       <el-col :span="1" :offset="0"
-        ><el-button
-          type="primary"
-          @click="handleAdd"
-          class="btn btn-add"
+        ><el-button type="primary" @click="handleAddBtn" class="btn btn-add"
           >添加</el-button
         >
       </el-col>
@@ -28,6 +25,39 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <el-dialog
+      title="收货地址"
+      :visible.sync="addDialogVisible"
+      :before-close="handleAddFormClose"
+    >
+      <el-form
+        class="add-form"
+        :model="addForm"
+        label-position="right"
+        label-width="100px"
+        :rules="addFormRules"
+        ref="addFormRef"
+      >
+        <el-form-item label="名称" prop="name">
+          <el-input v-model="addForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="gender">
+          <el-radio v-model="addForm.gender" label="0">女</el-radio>
+          <el-radio v-model="addForm.gender" label="1">男</el-radio>
+        </el-form-item>
+        <el-form-item label="年龄" prop="age">
+          <el-input v-model="addForm.age" type="number"></el-input>
+        </el-form-item>
+        <el-form-item label="爱好" prop="hobbies">
+          <el-input v-model="addForm.hobbies"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="handleAddFormClose">取 消</el-button>
+        <el-button type="primary" @click="handleSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -37,11 +67,24 @@ export default {
   data() {
     return {
       form: [],
+      addForm: {
+        name: "23",
+        gender: "1",
+        age: 22,
+        hobbies: "ew",
+      },
+      addFormRules: {
+        name: [{ required: true, trigger: "blur", message: "请输入姓名" }],
+        gender: [{ required: true, trigger: "blur", message: "请输入性别" }],
+        age: [{ required: true, trigger: "blur", message: "请输入年龄" }],
+        hobbies: [{ required: true, trigger: "blur", message: "请输入爱好" }],
+      },
+      addDialogVisible: false,
     };
   },
   methods: {
     async getForm() {
-      const data = await api.getFormApi().catch((err) => {
+      const data = await api.getStudentsApi().catch((err) => {
         return this.$message.alert(err);
       });
       this.form = data.data.students;
@@ -49,7 +92,25 @@ export default {
     },
     handleEdit(scope) {},
     handleDelete(scope) {},
-    handleAdd() {},
+    handleAddBtn() {
+      this.addDialogVisible = true;
+    },
+    handleAddFormClose() {
+      this.addDialogVisible=false;
+      this.$refs.addFormRef.resetFields();
+    },
+
+    handleSubmit() {
+      this.$refs.addFormRef.validate(async (valid) => {
+        if (!valid) return false;
+        const data =await api.addStudentsApi(this.addForm).catch((err) => {
+          return err;})
+        console.log(data);
+        this.$message.success("添加成功");
+        this.getForm()
+        this.handleAddFormClose();
+      });
+    },
   },
   created() {
     this.getForm();
@@ -61,9 +122,15 @@ export default {
 body {
   background-color: #fff;
 }
-.btn-add{
+.btn-add {
   margin-bottom: 20px;
-  width:100px;
+  width: 100px;
   font-size: 18px;
+}
+/deep/ .el-dialog__body {
+  padding-right: 100px;
+}
+/deep/.el-form-item__content {
+  text-align: left;
 }
 </style>
