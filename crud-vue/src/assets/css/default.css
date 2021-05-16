@@ -1,0 +1,19 @@
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  min-width: 1366px;
+}
+
+.box-card{
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15) !important;
+}
+
+.el-cascader-panel{ 
+  height: 200px; 
+}
+.el-scrollbar__wrap{
+  overflow-x: hidden;
+}
