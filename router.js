@@ -25,19 +25,24 @@ router.get('/students/get', async (req, res) => {
 
 router.post('/students/new', (req, res) => {
 
-  students.save(req.body,(err,data) => {
+  students.save(req.body, (err, data) => {
     if (err) res.send(err)
     res.send(data)
   })
-  // fs.readFile(path.join(__dirname, 'db.json'), 'utf8', (err, data) => {
-  //   if (err) { return res.send(console.log(err)) }
-  //   list = JSON.parse(data)
-  //   newStudent.id = list.students.length + 1
-  //   list.students.push(newStudent)
-  //   console.log(list);
-  //   fs.writeFile(path.join(__dirname, 'db.json'), JSON.stringify(list), (_err) => {
-  //     console.log("写入成功");
-  //   })
-  // })
+
+})
+
+router.post('/students/update', (req, res) => {
+  students.update(req.body,(err,data)=>{
+    if (err) res.send(err)
+    res.send(data)
+  })
+})
+
+router.delete('/students/delete', (req, res) => {
+  students.delete(req.query.id,(err, data)=>{
+    if (err) res.send(err)
+    res.send(data)
+  })
 })
 module.exports = router

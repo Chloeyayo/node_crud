@@ -89,14 +89,19 @@ export default {
         return this.$message.alert(err);
       });
       this.form = data.data.students;
-      console.log(this.form);
     },
     handleEdit(row) {
       this.formType = "edit";
       this.addDialogVisible = true;
-      this.addForm = row;
+      this.addForm = {...row};
     },
-    handleDelete(row) {},
+    async handleDelete(row) {
+      const data = await api.deleteStudentApi(row.id).catch((err)=>{
+        return this.$message.alert(err);
+      })
+      console.log(data);
+      this.getForm()
+    },
     handleAddBtn() {
       this.formType = "add";
       this.addDialogVisible = true;
@@ -116,11 +121,10 @@ export default {
           console.log(data);
           this.$message.success("添加成功");
         } else if (this.formType == "edit") {
-          // const data = await api.editStudentsApi(this.addForm).catch((err) => {
-          //   return err;
-          // });
-          // console.log(data);
-          console.log("edit");
+          const data = await api.editStudentApi(this.addForm).catch((err) => {
+            return err;
+          });
+          console.log(data);
           this.$message.success("修改成功");
 
         }
