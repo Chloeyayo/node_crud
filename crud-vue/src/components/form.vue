@@ -9,9 +9,17 @@
     </el-row>
 
     <el-table :data="form" border stripe width="100%">
-      <el-table-column prop="id" label="ID"> </el-table-column>
+      <el-table-column label="id">
+        <template slot-scope="scope">
+          <div>{{scope.$index+1}}</div>
+        </template>
+      </el-table-column>
       <el-table-column prop="name" label="name"> </el-table-column>
-      <el-table-column prop="gender" label="gender"> </el-table-column>
+      <el-table-column  label="gender">
+        <template slot-scope="scope">
+          {{scope.row.gender|genderFilter}}
+        </template>
+         </el-table-column>
       <el-table-column prop="age" label="age"></el-table-column>
       <el-table-column prop="hobbies" label="hobbies"></el-table-column>
       <el-table-column label="操作">
@@ -43,8 +51,8 @@
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="gender">
-          <el-radio v-model="addForm.gender" label="0">女</el-radio>
-          <el-radio v-model="addForm.gender" label="1">男</el-radio>
+          <el-radio v-model="addForm.gender" :label=0>女</el-radio>
+          <el-radio v-model="addForm.gender" :label=1>男</el-radio>
         </el-form-item>
         <el-form-item label="年龄" prop="age">
           <el-input v-model="addForm.age" type="number"></el-input>
@@ -69,15 +77,15 @@ export default {
       form: [],
       addForm: {
         name: "23",
-        gender: "1",
+        gender: 0,
         age: 22,
         hobbies: "ew",
       },
       addFormRules: {
         name: [{ required: true, trigger: "blur", message: "请输入姓名" }],
-        gender: [{ required: true, trigger: "blur", message: "请输入性别" }],
-        age: [{ required: true, trigger: "blur", message: "请输入年龄" }],
-        hobbies: [{ required: true, trigger: "blur", message: "请输入爱好" }],
+        // gender: [{ required: true, trigger: "blur", message: "请输入性别" }],
+        // age: [{ required: true, trigger: "blur", message: "请输入年龄" }],
+        // hobbies: [{ required: true, trigger: "blur", message: "请输入爱好" }],
       },
       addDialogVisible: false,
       formType: "",
@@ -85,10 +93,11 @@ export default {
   },
   methods: {
     async getForm() {
-      const data = await api.getStudentsApi().catch((err) => {
+      const {data:res} = await api.getStudentsApi().catch((err) => {
         return this.$message.alert(err);
       });
-      this.form = data.data.students;
+      console.log(res);
+      this.form = res;
     },
     handleEdit(row) {
       this.formType = "edit";
@@ -96,7 +105,7 @@ export default {
       this.addForm = {...row};
     },
     async handleDelete(row) {
-      const data = await api.deleteStudentApi(row.id).catch((err)=>{
+      const data = await api.deleteStudentApi(row._id).catch((err)=>{
         return this.$message.alert(err);
       })
       console.log(data);
@@ -136,6 +145,11 @@ export default {
   created() {
     this.getForm();
   },
+  filters: {
+    genderFilter: (gender)=>{
+      return gender==0?"女":"男"
+    }
+  }
 };
 </script>
 

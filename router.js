@@ -15,34 +15,38 @@ router.all("*", function (req, res, next) {
   else
     next();
 });
-router.get('/students/get', async (req, res) => {
-  students.find((err, data) => {
-    if (err) res.send(err.toString())
-    res.send(data)
-  })
-
+router.get('/students/get', (req, res) => {
+  students.find().then((students) => { res.send(students) }).catch((err) => { res.send(err.toString) })
+  // students.find((err, data) => {
+  //   if (err) res.send(err.toString())
+  //   res.send(data)
+  // })
 })
 
 router.post('/students/new', (req, res) => {
-
-  students.save(req.body, (err, data) => {
-    if (err) res.send(err)
-    res.send(data)
-  })
+  new students(req.body).save().then((student) => { res.send(student) }).catch((err) => { res.send(err.toString) })
+  // students.save(req.body, (err, data) => {
+  //   if (err) res.send(err)
+  //   res.send(data)
+  // })
 
 })
 
 router.post('/students/update', (req, res) => {
-  students.update(req.body,(err,data)=>{
-    if (err) res.send(err)
-    res.send(data)
-  })
+  students.findByIdAndUpdate(req.body._id, req.body).then((student) => {
+    res.send(student)
+  }).catch((err) => { res.send(err.toString) })
+  // students.update(req.body, (err, data) => {
+  //   if (err) res.send(err)
+  //   res.send(data)
+  // })
 })
 
 router.delete('/students/delete', (req, res) => {
-  students.delete(req.query.id,(err, data)=>{
-    if (err) res.send(err)
-    res.send(data)
-  })
+  students.findByIdAndDelete(req.query.id).then((student) => { res.send(student) }).catch((err) => { res.send(err.toString) })
+  // students.delete(req.query.id, (err, data) => {
+  //   if (err) res.send(err)
+  //   res.send(data)
+  // })
 })
 module.exports = router
